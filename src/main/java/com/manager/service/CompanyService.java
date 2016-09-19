@@ -63,6 +63,7 @@ public class CompanyService implements ICompanyService {
 		} else {
 			deleteSubCompanyFromTree(companyDAO.getCompanyById(id));
 		}
+		countTotalEarningsForAll(companyDAO.getAllCompanies());
 	}
 
 
@@ -74,21 +75,21 @@ public class CompanyService implements ICompanyService {
 	}
 
 	private long countTotalEarnings(Company company){
-		long totalEarnings = company.getSelfEstimatedEarnings();
+		long selfEarnings = company.getSelfEstimatedEarnings();
 		if(company.getRgt() - company.getLft() == 1) {
-			return totalEarnings;
+			return selfEarnings;
 		} else {
 			List<Company> companyList = companyDAO.getAllCompanies();
 			for(Company iterCompany : companyList){
 				if(iterCompany.getLft() > company.getLft() && iterCompany.getRgt() < company.getRgt()) {
-					totalEarnings += iterCompany.getSelfEstimatedEarnings();
+					selfEarnings += iterCompany.getSelfEstimatedEarnings();
 				}
 				if(iterCompany.getLft() > company.getRgt()){
-					return totalEarnings;
+					return selfEarnings;
 				}
 			}
 		}
-		return totalEarnings;
+		return selfEarnings;
 	}
 
 	private void setTreeCoordinatesForFirstCompany(Company company) {

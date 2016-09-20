@@ -1,7 +1,7 @@
 var app = angular.module('myApp', ['ngResource']);
 
 app.factory('Company', ['$resource', function ($resource) {
-    return $resource('http://localhost:8090/company/:companyId/', {companyId: '@id'},
+    return $resource('https://comorg.herokuapp.com/company/:companyId/', {companyId: '@id'},
 	{
 		updateCompany: {method: 'PUT'}
 	}

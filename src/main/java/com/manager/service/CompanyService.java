@@ -5,8 +5,10 @@ import com.manager.entity.Company;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
+@Transactional
 @Service
 public class CompanyService implements ICompanyService {
 	@Autowired
@@ -15,7 +17,8 @@ public class CompanyService implements ICompanyService {
 	public Company getCompanyById(int cid) {
 		Company obj = companyDAO.getCompanyById(cid);
 		return obj;
-	}	
+	}
+
 	@Override
 	public List<Company> getAllCompanies(){
 		List <Company> companiesList = companyDAO.getAllCompanies();

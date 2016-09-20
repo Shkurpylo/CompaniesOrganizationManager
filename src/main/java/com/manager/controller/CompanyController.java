@@ -44,7 +44,7 @@ public class CompanyController {
 	@RequestMapping(value= "/company", method = RequestMethod.POST)
 	public ResponseEntity<Void> addCompany(@RequestBody Company company, UriComponentsBuilder builder) {
 		boolean flag = companyService.addCompany(company);
-		if (flag) {
+		if (!flag) {
 			return new ResponseEntity<Void>(HttpStatus.CONFLICT);
 		} else {
 			HttpHeaders headers = new HttpHeaders();

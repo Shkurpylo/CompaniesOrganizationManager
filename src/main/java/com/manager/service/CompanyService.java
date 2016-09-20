@@ -5,10 +5,9 @@ import com.manager.entity.Company;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
-@Transactional
 @Service
 public class CompanyService implements ICompanyService {
 	@Autowired
@@ -178,32 +177,31 @@ public class CompanyService implements ICompanyService {
 		}
 	}
 
-	private void setDepth(List<Company> companyList){
-		Company parent;
-		try {
-			parent = companyList.get(0);
-		} catch (IndexOutOfBoundsException ex){
-			return;
+	private List<Company> getParents(List<Company> companyList){
+		List<Company> parentsList = new ArrayList();
+		for(Company company : companyList){
+			if(company.getParentsName() == null){
+				parentsList.add(company);
+			}
 		}
+		return parentsList;
+	}
 
-		int levelCount = 0;
-		for (int i = 1; i < companyList.size(); i++) {
+	private void setDepth(List<Company> companyList){
 
-			Company current = companyList.get(i);
-			if (current.getLft() - parent.getLft() == 1) {
-				levelCount++;
-				parent = current;
-				parent.setDepth(levelCount);
-				continue;
-			} else if (current.getLft() - parent.getLft() == 2) {
-				current.setDepth(levelCount);
-				parent = current;
-				parent.setDepth(levelCount);
-			} else if (current.getLft() - parent.getLft() > 2
-					&& parent.getRgt() - current.getLft() == 1){
-				levelCount = 0;
-				parent = current;
-				parent.setDepth(levelCount);
+		List<Company> parentsList = getParents(companyList);
+
+		for(Company parent : parentsList) {
+			parent.setDepth(0);
+			int parentLft = parent.getLft();
+			int parentRgt = parent.getRgt();
+			for (Company child : companyList) {
+				int childLft = child.getLft();
+				int childRgt = child.getRgt();
+				if (parentLft < childLft && parentRgt > childRgt) {
+					int depth = childLft - parentLft > parentRgt - childRgt ? parentRgt - childRgt : childLft - parentLft;
+					child.setDepth(depth);
+				}
 			}
 		}
 	}
